@@ -48,10 +48,9 @@ async function proxyRequest(request) {
         if (value) headers.set(name, value);
     }
 
-    let body = undefined;
-    if (request.method !== 'GET' && request.method !== 'HEAD') {
-        body = request.body;
-    }
+    const requestBody = (request.method !== 'GET' && request.method !== 'HEAD')
+        ? request.body
+        : undefined;
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), timeoutMs);
@@ -60,7 +59,7 @@ async function proxyRequest(request) {
         const response = await fetch(targetUrl, {
             method: request.method,
             headers,
-            body,
+            body: requestBody,
             signal: controller.signal,
             redirect: 'follow'
         });
@@ -69,9 +68,9 @@ async function proxyRequest(request) {
         const contentType = response.headers.get('content-type');
         if (contentType) responseHeaders.set('content-type', contentType);
 
-        const body = await response.arrayBuffer();
+        const responseBody = await response.arrayBuffer();
 
-        return new Response(body, {
+        return new Response(responseBody, {
             status: response.status,
             headers: responseHeaders
         });
