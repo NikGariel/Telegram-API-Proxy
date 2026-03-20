@@ -31,7 +31,7 @@ async function handleRequest(request) {
 
 async function proxyRequest(request) {
     const url = new URL(request.url);
-    const path = url.pathname;
+    const path = url.pathname.replace(/^\/api/, '');
 
     if (!path.startsWith('/bot')) {
         return jsonResponse({ ok: false, error: 'Invalid request path' }, 400);
