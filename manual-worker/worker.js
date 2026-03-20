@@ -69,7 +69,9 @@ async function proxyRequest(request) {
         const contentType = response.headers.get('content-type');
         if (contentType) responseHeaders.set('content-type', contentType);
 
-        return new Response(response.body, {
+        const body = await response.arrayBuffer();
+
+        return new Response(body, {
             status: response.status,
             headers: responseHeaders
         });
