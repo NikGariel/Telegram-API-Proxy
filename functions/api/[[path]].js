@@ -33,7 +33,6 @@ const suspiciousIPs = new Map();
 const CACHE_TTL = 300000;
 const SUSPICIOUS_THRESHOLD = 10;
 
-const ALLOWED_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'];
 const MAX_BODY_SIZE = 50 * 1024 * 1024;
 const ALLOWED_USER_AGENTS = /telegram|bot|curl|postman|httpie|axios|fetch/i;
 const BLOCKED_USER_AGENTS = /scanner|crawler|spider|bot.*attack|sqlmap|nikto|nmap/i;
@@ -187,9 +186,6 @@ async function performAdvancedSecurityChecks(request, env) {
     const referer = request.headers.get('referer') || '';
     const contentType = request.headers.get('content-type') || '';
 
-    if (!ALLOWED_METHODS.includes(request.method)) {
-        return { blocked: true, reason: 'Method not allowed', status: 405 };
-    }
 
     const contentLength = request.headers.get('content-length');
     if (contentLength) {
